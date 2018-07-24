@@ -16,7 +16,9 @@
 package com.hazelcast.simulator.tests.map;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.query.Predicate;
+import com.hazelcast.json.Json;
+import com.hazelcast.json.JsonObject;
+import com.hazelcast.json.JsonValue;
 import com.hazelcast.query.Predicates;
 import com.hazelcast.simulator.hz.HazelcastTest;
 import com.hazelcast.simulator.test.BaseThreadState;
@@ -30,11 +32,9 @@ import com.hazelcast.simulator.utils.ThrottlingLogger;
 import com.hazelcast.simulator.worker.loadsupport.Streamer;
 import com.hazelcast.simulator.worker.loadsupport.StreamerFactory;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.log4j.Level;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
@@ -42,41 +42,54 @@ import static org.apache.commons.lang3.RandomUtils.nextDouble;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.apache.commons.lang3.RandomUtils.nextLong;
 
-public class SerializationStrategyTest extends HazelcastTest {
+public class JsonTest extends HazelcastTest {
 
     public enum Strategy {
         PORTABLE,
         SERIALIZABLE,
         DATA_SERIALIZABLE,
-        IDENTIFIED_DATA_SERIALIZABLE
+        IDENTIFIED_DATA_SERIALIZABLE,
+        JSON
     }
 
     // properties
-    public Strategy strategy = Strategy.PORTABLE;
-    public int itemCount = 1000000;
-    public int recordsPerUnique = 10000;
+    public String strategy = Strategy.PORTABLE.name();
+    public int itemCount = 100000;
+    public boolean useIndex = false;
+    public String mapname = "default";
 
     private final ThrottlingLogger throttlingLogger = ThrottlingLogger.newLogger(logger, 5000);
-    private IMap<String, DomainObject> map;
+    private IMap<String, Object> map;
     private Set<String> uniqueStrings;
 
     @Setup
     public void setUp() {
-        map = targetInstance.getMap(name);
-        uniqueStrings = targetInstance.getSet(name);
+        map = targetInstance.getMap(mapname);
+        uniqueStrings = targetInstance.getSet(mapname);
     }
 
     @Prepare(global = true)
     public void prepare() {
-        int uniqueStringsCount = itemCount / recordsPerUnique;
-        String[] strings = generateUniqueStrings(uniqueStringsCount);
+        throttlingLogger.info(strategy + " " + targetInstance.getConfig().getMapConfig(mapname).getInMemoryFormat() + " " + mapname + " " + useIndex + " " + itemCount);
+        if (useIndex) {
+            map.addIndex("longVal", false);
+        }
+        String[] strings = generateUniqueStrings(itemCount);
 
-        Streamer<String, DomainObject> streamer = StreamerFactory.getInstance(map);
-        DomainObjectFactory objectFactory = DomainObjectFactory.newFactory(strategy);
-        for (int i = 0; i < itemCount; i++) {
-            String indexedField = strings[RandomUtils.nextInt(0, uniqueStringsCount)];
-            DomainObject o = createNewDomainObject(objectFactory, indexedField);
-            streamer.pushEntry(o.getKey(), o);
+        Streamer<String, Object> streamer = StreamerFactory.getInstance(map);
+        if (Strategy.valueOf(strategy) == Strategy.JSON) {
+            for (String key : strings) {
+                JsonValue o = createJsonObject(key);
+                streamer.pushEntry(key, o);
+            }
+        } else {
+
+            DomainObjectFactory objectFactory = DomainObjectFactory.newFactory(Strategy.valueOf(strategy));
+            for (String key : strings) {
+                DomainObject o = createNewDomainObject(objectFactory, key);
+                streamer.pushEntry(o.getKey(), o);
+            }
+
         }
         streamer.await();
     }
@@ -91,46 +104,37 @@ public class SerializationStrategyTest extends HazelcastTest {
         return stringsSet.toArray(new String[uniqueStringsCount]);
     }
 
-    private DomainObject createNewDomainObject(DomainObjectFactory objectFactory, String indexedField) {
+    private DomainObject createNewDomainObject(DomainObjectFactory objectFactory, String key) {
         DomainObject o = objectFactory.newInstance();
-        o.setKey(randomAlphanumeric(7));
-        o.setStringVal(indexedField);
-        o.setIntVal(nextInt(0, Integer.MAX_VALUE));
-        o.setLongVal(nextLong(0, Long.MAX_VALUE));
+        o.setKey(key);
+        o.setStringVal(randomAlphanumeric(7));
         o.setDoubleVal(nextDouble(0.0, Double.MAX_VALUE));
+        o.setLongVal(nextLong(0, 500));
+        o.setIntVal(nextInt(0, Integer.MAX_VALUE));
         return o;
     }
 
+
+    private JsonValue createJsonObject(String key) {
+        JsonObject o = Json.object();
+        o.set("key", key);
+        o.set("stringVal", randomAlphanumeric(7));
+        o.set("doubleVal", nextDouble(0.0, Double.MAX_VALUE));
+        o.set("longVal", nextLong(0, 500));
+        o.set("intVal", nextInt(0, Integer.MAX_VALUE));
+        return o;
+    }
+
+
     @BeforeRun
-    public void beforeRun(ThreadState state) throws Exception {
-        state.localUniqueStrings = uniqueStrings.toArray(new String[uniqueStrings.size()]);
-    }
-
-    @TimeStep(prob = -1)
-    public void getByKey() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @TimeStep(prob = 0)
-    public void getByIntIndex() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void beforeRun(BaseThreadState state) throws Exception {
+//        state.localUniqueStrings = uniqueStrings.toArray(new String[uniqueStrings.size()]);
     }
 
     @TimeStep(prob = 1)
-    public void getByStringIndex(ThreadState state) {
-        String string = state.getUniqueString();
-        Predicate predicate = Predicates.equal("stringVal", string);
-        Set<Map.Entry<String, DomainObject>> entries = map.entrySet(predicate);
-        throttlingLogger.log(Level.INFO, "GetByStringIndex: " + entries.size() + " entries");
+    public void getByStringIndex(BaseThreadState state) {
+        long value = 250L;
+        Collection<Object> val = map.values(Predicates.greaterEqual("longVal", value));
     }
 
-    public class ThreadState extends BaseThreadState {
-
-        private String[] localUniqueStrings;
-
-        private String getUniqueString() {
-            int i = randomInt(localUniqueStrings.length);
-            return localUniqueStrings[i];
-        }
-    }
 }

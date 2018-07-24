@@ -15,7 +15,9 @@
  */
 package com.hazelcast.simulator.tests.map.domain;
 
-abstract class AbstractDomainObject implements DomainObject {
+import java.io.Serializable;
+
+abstract class AbstractDomainObject implements DomainObject, Serializable {
 
     String key;
     String stringVal;

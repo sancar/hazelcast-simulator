@@ -15,7 +15,7 @@
  */
 package com.hazelcast.simulator.tests.map.domain;
 
-import com.hazelcast.simulator.tests.map.SerializationStrategyTest.Strategy;
+import com.hazelcast.simulator.tests.map.JsonTest.Strategy;
 
 public final class DomainObjectFactory {
 
