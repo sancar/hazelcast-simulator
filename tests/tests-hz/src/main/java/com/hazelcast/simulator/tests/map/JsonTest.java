@@ -134,7 +134,7 @@ public class JsonTest extends HazelcastTest {
     @TimeStep(prob = 1)
     public void getByStringIndex(BaseThreadState state) {
         long value = 250L;
-        Collection<Object> val = map.values(Predicates.greaterEqual("longVal", value));
+        Collection<Object> val = map.values(Predicates.equal("longVal", value));
     }
 
 }
