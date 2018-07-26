@@ -38,7 +38,7 @@ public class PortableDomainObject extends AbstractDomainObject implements Portab
     @Override
     public void writePortable(PortableWriter out) throws IOException {
         out.writeUTF("key", key);
-        out.writeUTF("stringVal", stringVal);
+        out.writeUTF("stringVam", stringVam);
         out.writeDouble("doubleVal", doubleVal);
         out.writeLong("longVal", longVal);
         out.writeInt("intVal", intVal);
@@ -47,7 +47,7 @@ public class PortableDomainObject extends AbstractDomainObject implements Portab
     @Override
     public void readPortable(PortableReader in) throws IOException {
         key = in.readUTF("key");
-        stringVal = in.readUTF("stringVal");
+        stringVam = in.readUTF("stringVam");
         doubleVal = in.readDouble("doubleVal");
         longVal = in.readLong("longVal");
         intVal = in.readInt("intVal");

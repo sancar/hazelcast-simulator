@@ -26,7 +26,7 @@ public class DataSerializableDomainObject extends AbstractDomainObject implement
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeUTF(key);
-        out.writeUTF(stringVal);
+        out.writeUTF(stringVam);
         out.writeDouble(doubleVal);
         out.writeLong(longVal);
         out.writeInt(intVal);
@@ -35,7 +35,7 @@ public class DataSerializableDomainObject extends AbstractDomainObject implement
     @Override
     public void readData(ObjectDataInput in) throws IOException {
         key = in.readUTF();
-        stringVal = in.readUTF();
+        stringVam = in.readUTF();
         doubleVal = in.readDouble();
         longVal = in.readLong();
         intVal = in.readInt();

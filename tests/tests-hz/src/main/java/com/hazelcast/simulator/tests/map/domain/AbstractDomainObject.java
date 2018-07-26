@@ -20,7 +20,7 @@ import java.io.Serializable;
 abstract class AbstractDomainObject implements DomainObject, Serializable {
 
     String key;
-    String stringVal;
+    String stringVam;
     double doubleVal;
     long longVal;
     int intVal;
@@ -36,13 +36,13 @@ abstract class AbstractDomainObject implements DomainObject, Serializable {
     }
 
     @Override
-    public String getStringVal() {
-        return stringVal;
+    public String getStringVam() {
+        return stringVam;
     }
 
     @Override
-    public void setStringVal(String stringVal) {
-        this.stringVal = stringVal;
+    public void setStringVam(String stringVal) {
+        this.stringVam = stringVal;
     }
 
     @Override
@@ -101,7 +101,7 @@ abstract class AbstractDomainObject implements DomainObject, Serializable {
     public String toString() {
         return getClass().getSimpleName() + '{'
                 + "key='" + key + '\''
-                + ", stringVal='" + stringVal + '\''
+                + ", stringVal='" + stringVam + '\''
                 + ", doubleVal=" + doubleVal
                 + ", longVal=" + longVal
                 + ", intVal=" + intVal

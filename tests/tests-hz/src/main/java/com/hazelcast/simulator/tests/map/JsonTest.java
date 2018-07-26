@@ -107,7 +107,7 @@ public class JsonTest extends HazelcastTest {
     private DomainObject createNewDomainObject(DomainObjectFactory objectFactory, String key) {
         DomainObject o = objectFactory.newInstance();
         o.setKey(key);
-        o.setStringVal(randomAlphanumeric(7));
+        o.setStringVam(randomAlphanumeric(7));
         o.setDoubleVal(nextDouble(0.0, Double.MAX_VALUE));
         o.setLongVal(nextLong(0, 500));
         o.setIntVal(nextInt(0, Integer.MAX_VALUE));
@@ -118,7 +118,7 @@ public class JsonTest extends HazelcastTest {
     private JsonValue createJsonObject(String key) {
         JsonObject o = Json.object();
         o.set("key", key);
-        o.set("stringVal", randomAlphanumeric(7));
+        o.set("stringVam", randomAlphanumeric(7));
         o.set("doubleVal", nextDouble(0.0, Double.MAX_VALUE));
         o.set("longVal", nextLong(0, 500));
         o.set("intVal", nextInt(0, Integer.MAX_VALUE));
@@ -133,7 +133,7 @@ public class JsonTest extends HazelcastTest {
 
     @TimeStep(prob = 1)
     public void getByStringIndex(BaseThreadState state) {
-        Collection<Object> val = map.values(Predicates.equal("stringVal", "sancar"));
+        Collection<Object> val = map.values(Predicates.equal("stringVam", "sancar"));
     }
 
 }

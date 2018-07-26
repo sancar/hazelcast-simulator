@@ -22,9 +22,9 @@ public interface DomainObject {
 
     void setKey(String key);
 
-    String getStringVal();
+    String getStringVam();
 
-    void setStringVal(String stringVal);
+    void setStringVam(String stringVal);
 
     double getDoubleVal();
 
