@@ -72,7 +72,7 @@ public class JsonTest extends HazelcastTest {
     public void prepare() {
         throttlingLogger.info(strategy + " " + targetInstance.getConfig().getMapConfig(mapname).getInMemoryFormat() + " " + mapname + " " + useIndex + " " + itemCount);
         if (useIndex) {
-            map.addIndex("longVal", false);
+            map.addIndex("stringVam", false);
         }
         String[] strings = generateUniqueStrings(itemCount);
 
