@@ -5,9 +5,9 @@
         xmlns="http://www.hazelcast.com/schema/client-config"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <cluster>
+    <group>
         <name>workers</name>
-    </cluster>
+    </group>
 
     <network>
         <cluster-members>
