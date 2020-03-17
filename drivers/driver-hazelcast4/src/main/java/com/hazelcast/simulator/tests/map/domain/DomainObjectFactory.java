@@ -15,7 +15,7 @@
  */
 package com.hazelcast.simulator.tests.map.domain;
 
-import com.hazelcast.simulator.tests.map.SerializationStrategyTest.Strategy;
+import com.hazelcast.simulator.tests.map.QueryPerformanceTest.Strategy;
 
 public final class DomainObjectFactory {
 
@@ -29,16 +29,46 @@ public final class DomainObjectFactory {
         return new DomainObjectFactory(strategy);
     }
 
-    public DomainObject newInstance() {
+    public TweetObject newObject() {
         switch (strategy) {
             case PORTABLE:
-                return new PortableDomainObject();
+                return new PortableTweetObject();
             case SERIALIZABLE:
-                return new SerializableDomainObject();
+                return new SerializableTweetObject();
             case DATA_SERIALIZABLE:
-                return new DataSerializableDomainObject();
+                return new DSTweetObject();
             case IDENTIFIED_DATA_SERIALIZABLE:
-                return new IdentifiedDataSerializableDomainObject();
+                return new IDSTweetObject();
+            default:
+                throw new IllegalStateException("Unknown strategy: " + strategy);
+        }
+    }
+
+    public TweetUserObject newUserObject() {
+        switch (strategy) {
+            case PORTABLE:
+                return new PortableTweetUserObject();
+            case SERIALIZABLE:
+                return new SerializableTweetUserObject();
+            case DATA_SERIALIZABLE:
+                return new DSTweetUserObject();
+            case IDENTIFIED_DATA_SERIALIZABLE:
+                return new IDSTweetUserObject();
+            default:
+                throw new IllegalStateException("Unknown strategy: " + strategy);
+        }
+    }
+
+    public TweetLocationObject newLocationObject() {
+        switch (strategy) {
+            case PORTABLE:
+                return new PortableTweetLocationObject();
+            case SERIALIZABLE:
+                return new SerializableTweetLocationObject();
+            case DATA_SERIALIZABLE:
+                return new DSTweetLocationObject();
+            case IDENTIFIED_DATA_SERIALIZABLE:
+                return new IDSTweetLocationObject();
             default:
                 throw new IllegalStateException("Unknown strategy: " + strategy);
         }

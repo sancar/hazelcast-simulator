@@ -21,23 +21,21 @@ import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
 
-public class DataSerializableDomainObject extends AbstractDomainObject implements DataSerializable {
+public class DSTweetObject extends AbstractTweetObject implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
-        out.writeUTF(key);
-        out.writeUTF(stringVal);
-        out.writeDouble(doubleVal);
-        out.writeLong(longVal);
-        out.writeInt(intVal);
+        out.writeUTF(createdAt);
+        out.writeUTF(idStr);
+        out.writeUTF(text);
+        out.writeObject(user);
     }
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
-        key = in.readUTF();
-        stringVal = in.readUTF();
-        doubleVal = in.readDouble();
-        longVal = in.readLong();
-        intVal = in.readInt();
+        createdAt = in.readUTF();
+        idStr = in.readUTF();
+        text = in.readUTF();
+        user = in.readObject();
     }
 }

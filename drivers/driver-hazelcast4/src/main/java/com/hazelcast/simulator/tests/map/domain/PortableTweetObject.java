@@ -21,7 +21,7 @@ import com.hazelcast.nio.serialization.PortableWriter;
 
 import java.io.IOException;
 
-public class PortableDomainObject extends AbstractDomainObject implements Portable {
+public class PortableTweetObject extends AbstractTweetObject implements Portable {
 
     static final int CLASS_ID = 1;
 
@@ -37,19 +37,17 @@ public class PortableDomainObject extends AbstractDomainObject implements Portab
 
     @Override
     public void writePortable(PortableWriter out) throws IOException {
-        out.writeUTF("key", key);
-        out.writeUTF("stringVal", stringVal);
-        out.writeDouble("doubleVal", doubleVal);
-        out.writeLong("longVal", longVal);
-        out.writeInt("intVal", intVal);
+       out.writeUTF("createdAt", createdAt);
+       out.writeUTF("idStr", idStr);
+       out.writeUTF("text", text);
+       out.writePortable("user", (PortableTweetUserObject)user);
     }
 
     @Override
     public void readPortable(PortableReader in) throws IOException {
-        key = in.readUTF("key");
-        stringVal = in.readUTF("stringVal");
-        doubleVal = in.readDouble("doubleVal");
-        longVal = in.readLong("longVal");
-        intVal = in.readInt("intVal");
+        createdAt = in.readUTF("createdAt");
+        idStr = in.readUTF("idStr");
+        text = in.readUTF("text");
+        user = in.readPortable("user");
     }
 }

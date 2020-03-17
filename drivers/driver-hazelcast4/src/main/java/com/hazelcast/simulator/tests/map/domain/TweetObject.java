@@ -15,19 +15,21 @@
  */
 package com.hazelcast.simulator.tests.map.domain;
 
-import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
+@SuppressWarnings("unused")
+public interface TweetObject {
+    String getCreatedAt();
 
-public class IdentifiedDataSerializableDomainObject extends DataSerializableDomainObject implements IdentifiedDataSerializable {
+    void setCreatedAt(String createdAt);
 
-    static final int CLASS_ID = 1;
+    String getIdStr();
 
-    @Override
-    public int getClassId() {
-        return CLASS_ID;
-    }
+    void setIdStr(String idStr);
 
-    @Override
-    public int getFactoryId() {
-        return IdentifiedDataSerializableObjectFactory.FACTORY_ID;
-    }
+    String getText();
+
+    void setText(String text);
+
+    TweetUserObject getUser();
+
+    void setUser(TweetUserObject user);
 }

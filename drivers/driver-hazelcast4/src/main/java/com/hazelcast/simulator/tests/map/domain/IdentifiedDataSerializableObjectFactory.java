@@ -25,8 +25,12 @@ public class IdentifiedDataSerializableObjectFactory implements DataSerializable
     @Override
     public IdentifiedDataSerializable create(int typeId) {
         switch (typeId) {
-            case IdentifiedDataSerializableDomainObject.CLASS_ID:
-                return new IdentifiedDataSerializableDomainObject();
+            case IDSTweetObject.CLASS_ID:
+                return new IDSTweetObject();
+            case IDSTweetLocationObject.CLASS_ID:
+                return new IDSTweetLocationObject();
+            case IDSTweetUserObject.CLASS_ID:
+                return new IDSTweetUserObject();
             default:
                 throw new IllegalArgumentException("Unknown type id " + typeId);
         }

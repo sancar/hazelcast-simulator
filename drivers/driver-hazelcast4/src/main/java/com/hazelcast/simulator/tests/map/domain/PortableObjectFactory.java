@@ -25,8 +25,12 @@ public class PortableObjectFactory implements PortableFactory {
     @Override
     public Portable create(int classId) {
         switch (classId) {
-            case PortableDomainObject.CLASS_ID:
-                return new PortableDomainObject();
+            case PortableTweetObject.CLASS_ID:
+                return new PortableTweetObject();
+            case PortableTweetLocationObject.CLASS_ID:
+                return new PortableTweetLocationObject();
+            case PortableTweetUserObject.CLASS_ID:
+                return new PortableTweetUserObject();
             default:
                 throw new IllegalArgumentException("Unknown class ID" + classId);
         }
