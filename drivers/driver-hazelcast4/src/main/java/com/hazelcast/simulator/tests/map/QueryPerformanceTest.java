@@ -35,7 +35,6 @@ import com.hazelcast.simulator.worker.loadsupport.Streamer;
 import com.hazelcast.simulator.worker.loadsupport.StreamerFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,6 +62,7 @@ public class QueryPerformanceTest extends HazelcastTest {
     private final ThrottlingLogger throttlingLogger = ThrottlingLogger.newLogger(logger, 5000);
     private IMap<Integer, Object> map;
     private Set<String> uniqueStrings;
+    private SampleFactory factory;
 
     @Setup
     public void setUp() {
@@ -81,7 +81,7 @@ public class QueryPerformanceTest extends HazelcastTest {
         }
 
         Streamer<Integer, Object> streamer = StreamerFactory.getInstance(map);
-        SampleFactory factory;
+
         MetadataCreator metadataCreator = new MetadataCreator();
         if (Strategy.valueOf(strategy) == Strategy.JSON) {
             factory = new JsonSampleFactory(new TweetJsonFactory(), metadataCreator);
@@ -112,7 +112,17 @@ public class QueryPerformanceTest extends HazelcastTest {
     }
 
     @TimeStep(prob = 1)
-    public void getByStringIndex(BaseThreadState state) {
-        Collection<Object> val = map.values(Predicates.equal(predicateLeft, predicateRight));
+    public Object getByStringIndex(BaseThreadState state) {
+        return map.values(Predicates.equal(predicateLeft, predicateRight));
+    }
+
+    @TimeStep(prob = 0)
+    public void put(BaseThreadState state) {
+        map.put(state.randomInt(itemCount), factory.create());
+    }
+
+    @TimeStep(prob = 0)
+    public Object get(BaseThreadState state) {
+        return map.get(state.randomInt(itemCount));
     }
 }
