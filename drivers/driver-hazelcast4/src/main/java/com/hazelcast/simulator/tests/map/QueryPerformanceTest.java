@@ -118,7 +118,9 @@ public class QueryPerformanceTest extends HazelcastTest {
 
     @TimeStep(prob = 0)
     public void put(BaseThreadState state) {
-        map.put(state.randomInt(itemCount), factory.create());
+        int k = state.randomInt(itemCount);
+        SampleFactory factory = this.factory;
+        map.put(k, factory.create());
     }
 
     @TimeStep(prob = 0)
