@@ -71,6 +71,14 @@ public class QueryPerformanceTest extends HazelcastTest {
         String[] pred = predicate.split("=");
         predicateLeft = pred[0];
         predicateRight = pred[1];
+
+        MetadataCreator metadataCreator = new MetadataCreator();
+        if (Strategy.valueOf(strategy) == Strategy.JSON) {
+            factory = new JsonSampleFactory(new TweetJsonFactory(), metadataCreator);
+        } else {
+            DomainObjectFactory objectFactory = DomainObjectFactory.newFactory(Strategy.valueOf(strategy));
+            factory = new ObjectSampleFactory(objectFactory, metadataCreator);
+        }
     }
 
     @Prepare(global = true)
@@ -81,14 +89,6 @@ public class QueryPerformanceTest extends HazelcastTest {
         }
 
         Streamer<Integer, Object> streamer = StreamerFactory.getInstance(map);
-
-        MetadataCreator metadataCreator = new MetadataCreator();
-        if (Strategy.valueOf(strategy) == Strategy.JSON) {
-            factory = new JsonSampleFactory(new TweetJsonFactory(), metadataCreator);
-        } else {
-            DomainObjectFactory objectFactory = DomainObjectFactory.newFactory(Strategy.valueOf(strategy));
-            factory = new ObjectSampleFactory(objectFactory, metadataCreator);
-        }
         for (int i = 0; i < itemCount; i++) {
             Object o = factory.create();
             streamer.pushEntry(i, o);
@@ -118,9 +118,7 @@ public class QueryPerformanceTest extends HazelcastTest {
 
     @TimeStep(prob = 0)
     public void put(BaseThreadState state) {
-        int k = state.randomInt(itemCount);
-        SampleFactory factory = this.factory;
-        map.put(k, factory.create());
+        map.put(state.randomInt(itemCount), factory.create());
     }
 
     @TimeStep(prob = 0)
