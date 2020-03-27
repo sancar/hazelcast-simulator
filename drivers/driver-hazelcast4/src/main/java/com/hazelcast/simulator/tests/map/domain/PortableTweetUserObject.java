@@ -38,7 +38,7 @@ public class PortableTweetUserObject extends AbstractTweetUserObject implements 
         name = reader.readUTF("name");
         screenName = reader.readUTF("screenName");
         location = reader.readPortable("location");
-        url = reader.readPortable("url");
+        url = reader.readUTF("url");
         description = reader.readUTF("description");
     }
 }
