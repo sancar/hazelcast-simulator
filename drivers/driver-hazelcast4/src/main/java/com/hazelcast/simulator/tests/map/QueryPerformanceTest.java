@@ -24,6 +24,7 @@ import com.hazelcast.simulator.test.annotations.BeforeRun;
 import com.hazelcast.simulator.test.annotations.Prepare;
 import com.hazelcast.simulator.test.annotations.Setup;
 import com.hazelcast.simulator.test.annotations.TimeStep;
+import com.hazelcast.simulator.tests.map.domain.BytesSampleFactory;
 import com.hazelcast.simulator.tests.map.domain.DomainObjectFactory;
 import com.hazelcast.simulator.tests.map.domain.JsonSampleFactory;
 import com.hazelcast.simulator.tests.map.domain.MetadataCreator;
@@ -46,7 +47,8 @@ public class QueryPerformanceTest extends HazelcastTest {
         SERIALIZABLE,
         DATA_SERIALIZABLE,
         IDENTIFIED_DATA_SERIALIZABLE,
-        JSON
+        JSON,
+        BYTES
     }
 
     // properties
@@ -55,6 +57,7 @@ public class QueryPerformanceTest extends HazelcastTest {
     public boolean useIndex = false;
     public String mapname = "default";
     public String predicate = "createdAt=sancar";
+    public int byteSize = 330;
 
     private String predicateLeft;
     private String predicateRight;
@@ -75,6 +78,8 @@ public class QueryPerformanceTest extends HazelcastTest {
         MetadataCreator metadataCreator = new MetadataCreator();
         if (Strategy.valueOf(strategy) == Strategy.JSON) {
             factory = new JsonSampleFactory(new TweetJsonFactory(), metadataCreator);
+        } else if (Strategy.valueOf(strategy) == Strategy.BYTES) {
+            factory = new BytesSampleFactory(byteSize);
         } else {
             DomainObjectFactory objectFactory = DomainObjectFactory.newFactory(Strategy.valueOf(strategy));
             factory = new ObjectSampleFactory(objectFactory, metadataCreator);
@@ -113,7 +118,7 @@ public class QueryPerformanceTest extends HazelcastTest {
 
     @TimeStep(prob = 1)
     public Object getByStringIndex(BaseThreadState state) {
-        return map.values(Predicates.equal(predicateLeft, predicateRight));
+        return map.keySet(Predicates.equal(predicateLeft, predicateRight));
     }
 
     @TimeStep(prob = 0)
