@@ -1,61 +1,55 @@
 package com.hazelcast.simulator.tests.map.domain;
 
-import java.util.Date;
-import java.util.Random;
-
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang3.RandomUtils.nextLong;
-
 public class MetadataCreator {
 
-    private static final String[] COUNTRIES = new String[] {
+    private static final String[] COUNTRIES = new String[]{
             "UK", "US", "TR", "CZ", "FR"
     };
 
-    private static final String[] CITIES = new String[] {
+    private static final String[] CITIES = new String[]{
             "Gotham", "Metropolis", "Duckburg", "District X", "Riverdale", "Smallville", "Star City",
             "Stepford", "Emerald City", "Derry", "Zion"
     };
 
-    private Random random = new Random();
+//    private Random random = new Random();
 
     public String getCreatedAt() {
-        return new Date(nextLong(1 << 12, 1L << 41)).toString();
+        return "Wed Feb 05 19:19:31 EET 1975";
     }
 
     public String getIdStr() {
-        return "" + random.nextInt();
+        return "1";
     }
 
     public String getText() {
-        return randomAlphanumeric(130);
+        return "glHO4lyBwBHDu4IjVDcLqrWYbSSjXzZL3kyDXMRwhZzI7zrFwqpBKeuPVapSU7xTIOwmV3zLlUPOgG11uYxNPPeWVCasGHTN43EH9iSkzmr0WRbcaE0Xwmo0f6IWcb1jjk";
     }
 
     public int getId() {
-        return random.nextInt();
+        return 1;
     }
 
     public String getName() {
-        return randomAlphanumeric(random.nextInt(3) + 6);
+        return "qZtfxB";
     }
 
     public String getScreenName() {
-        return randomAlphanumeric(8 + random.nextInt(2));
+        return "VTFBKYtK";
     }
 
     public String getCountry() {
-        return COUNTRIES[random.nextInt(COUNTRIES.length)];
+        return COUNTRIES[0];
     }
 
     public String getCity() {
-        return CITIES[random.nextInt(CITIES.length)];
+        return CITIES[0];
     }
 
     public String getUrl() {
-        return "www." + randomAlphanumeric(random.nextInt(5) + 3) + ".com";
+        return "www.LPfz3XJF.com";
     }
 
     public String getDescription() {
-        return randomAlphanumeric(50);
+        return "A05Jq62csVz8ofjkEv86leDEC4SNjtjnD46S56qlZJ0DF5S0DG";
     }
 }
